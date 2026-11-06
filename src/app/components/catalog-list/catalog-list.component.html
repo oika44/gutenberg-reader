@@ -53,6 +53,8 @@
       <span class="categories">{{ entry.categories.join(', ') }}</span>
     </div>
     <span class="id">#{{ entry.id }}</span>
-    <button type="button" (click)="open(entry.id)">開く</button>
+    <button type="button" [attr.aria-label]="entry.title + ' を開く'" (click)="open(entry.id)">
+      開く
+    </button>
   </div>
 </cdk-virtual-scroll-viewport>

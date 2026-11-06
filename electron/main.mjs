@@ -250,6 +250,8 @@ function createReaderWindow() {
   readerWindow = win;
   win.on('closed', () => {
     if (readerWindow === win) readerWindow = null;
+    // 一覧だけ残ると読書ウインドウを作り直せないので、一緒に閉じる
+    if (shouldReuseWindow(catalogWindow)) catalogWindow.close();
   });
 }
 

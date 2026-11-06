@@ -19,6 +19,7 @@ Project Gutenberg の目録を別のウインドウで一覧にし、分類・�
 - 一覧ウインドウは `app://local/catalog` を読み込む。`resolveStaticFile` は無いファイルに `index.html` を返し、`index.html` は `<base href="/">` なので、配信の仕組みは変えない。
 - `App` は `location.pathname` が `/catalog` なら `CatalogListComponent`、それ以外は `ReaderComponent` を出す。
 - 一覧ウインドウの大きさは 900×700（最小 640×480）、題名は「Gutenberg 目録」。preload と sandbox は読書ウインドウと同じ。
+- 読書ウインドウを閉じたら一覧ウインドウも閉じる（一覧だけ残ると読書ウインドウを作り直せないため）。
 
 ## 一覧から本を開く（IPC）
 

@@ -1,6 +1,8 @@
 import { CatalogSearchComponent } from '../catalog-search/catalog-search.component';
 import {
   Component,
+  DestroyRef,
+  ElementRef,
   Injector,
   afterNextRender,
   computed,
@@ -42,10 +44,14 @@ export class ReaderComponent {
   private readonly wordLookup = inject(WordLookupService);
   private readonly desktop = inject(DesktopBridgeService).api;
   private readonly injector = inject(Injector);
+  private readonly destroyRef = inject(DestroyRef);
   protected readonly builder = inject(PStudyBuilderService);
   private readonly viewport = viewChild.required(CdkVirtualScrollViewport);
+  private readonly bookInput = viewChild.required<ElementRef<HTMLInputElement>>('bookInput');
 
   protected readonly lineHeight = LINE_HEIGHT;
+  /** 目録の一覧ウインドウを開けるのはデスクトップ版だけ */
+  protected readonly hasCatalogWindow = typeof this.desktop?.openCatalogWindow === 'function';
 
   readonly book = signal<Book | null>(null);
   readonly startLine = signal<number | null>(null);
@@ -80,12 +86,27 @@ export class ReaderComponent {
 
   constructor() {
     this.readingLog.init().catch((err: unknown) => this.showError(err));
+    // 目録の一覧ウインドウで「開く」を押されたら、その本を開く（ブラウザ版には一覧ウインドウがない）
+    if (this.desktop) {
+      const unsubscribe = this.desktop.onOpenBook((id) =>
+        this.selectFromCatalog(this.bookInput().nativeElement, id),
+      );
+      this.destroyRef.onDestroy(unsubscribe);
+    }
   }
 
   /** 目録で選んだ本を、番号の入力欄に入れて開く */
   selectFromCatalog(bookInput: HTMLInputElement, id: number): void {
     bookInput.value = String(id);
     void this.openBook(String(id));
+  }
+
+  protected async openCatalogWindow(): Promise<void> {
+    try {
+      await this.desktop?.openCatalogWindow();
+    } catch (err) {
+      this.message.set(`目録の一覧を開けませんでした（${errorText(err)}）`);
+    }
   }
 
   async openBook(input: string): Promise<void> {

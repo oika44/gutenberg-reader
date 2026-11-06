@@ -9,6 +9,9 @@
     (keydown.enter)="openBook(bookInput.value)"
   />
   <button type="button" (click)="openBook(bookInput.value)" [disabled]="loading()">開く</button>
+  @if (hasCatalogWindow) {
+    <button type="button" (click)="openCatalogWindow()">目録の一覧</button>
+  }
   @if (book(); as b) {
     <span class="book-title"
       >{{ b.title || '（題名なし）' }}{{ b.author ? ' / ' + b.author : '' }}</span

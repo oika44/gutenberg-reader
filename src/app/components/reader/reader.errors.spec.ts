@@ -11,7 +11,7 @@ import { BOOK, provideFakeCatalog } from './reader.testing';
 describe('ReaderComponent（エラー表示・デスクトップ版でないとき）', () => {
   async function create(
     readingLog: Partial<Record<'init' | 'changeLogPath', () => Promise<void>>>,
-    api: Pick<GutenbergDesktop, 'saveFile'> | null,
+    api: Pick<GutenbergDesktop, 'saveFile' | 'onOpenBook'> | null,
   ) {
     TestBed.configureTestingModule({
       imports: [ReaderComponent],
@@ -74,7 +74,7 @@ describe('ReaderComponent（エラー表示・デスクトップ版でないと�
 
   it('保存先を選ぶのをキャンセルしたら何も表示しない（前の案内を残す）', async () => {
     const saveFile = vi.fn<GutenbergDesktop['saveFile']>(async () => null);
-    const fixture = await create({}, { saveFile });
+    const fixture = await create({}, { saveFile, onOpenBook: vi.fn(() => () => {}) });
     const component = fixture.componentInstance;
     await component.lookupWord('apple');
     component.message.set('前の案内');

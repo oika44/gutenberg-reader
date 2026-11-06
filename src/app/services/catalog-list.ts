@@ -1,5 +1,8 @@
 import { CatalogEntry, searchCatalog } from './catalog';
 
+/** 比較のたびに Intl を作ると 6 万件で遅いので、1 つを使い回す */
+const collator = new Intl.Collator('en', { sensitivity: 'base' });
+
 /** 一覧の並べ替えの種類 */
 export type CatalogSort = 'id' | 'title' | 'author';
 
@@ -23,7 +26,7 @@ export function filterCatalog(
 }
 
 function compareText(a: string, b: string): number {
-  return a.localeCompare(b, 'en', { sensitivity: 'base' });
+  return collator.compare(a, b);
 }
 
 /** 新しい配列に並べ替える。題名・著者が同じなら番号の小さい順 */
@@ -43,7 +46,7 @@ export function countCategories(entries: readonly CatalogEntry[]): CategoryCount
   }
   return [...counts]
     .map(([name, count]) => ({ name, count }))
-    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, 'en'));
+    .sort((a, b) => b.count - a.count || collator.compare(a.name, b.name));
 }
 
 /** 分類を持つ本が 1 冊でもあるか */

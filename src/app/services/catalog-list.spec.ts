@@ -30,6 +30,17 @@ describe('filterCatalog', () => {
   it('一致が無ければ空の配列', () => {
     expect(filterCatalog(entries, 'zzz', null)).toEqual([]);
   });
+
+  it('空白だけの語は絞らず全件を返す', () => {
+    expect(ids(filterCatalog(entries, '   ', null))).toEqual([3, 1, 2, 4]);
+  });
+
+  it('入力の順を保つ（並べ替え済みの入力を並べ替えない）', () => {
+    const sorted = sortCatalog(entries, 'title');
+    expect(ids(filterCatalog(sorted, 'tale', null))).toEqual([1, 3]);
+    expect(ids(filterCatalog(sorted, '', 'Poetry'))).toEqual([1, 2]);
+    expect(ids(filterCatalog([...sorted].reverse(), '', null))).toEqual([4, 2, 3, 1]);
+  });
 });
 
 describe('sortCatalog', () => {

@@ -38,9 +38,9 @@ export class CatalogListComponent {
     const selected = this.selectedCategory();
     return this.categories().some((c) => c.name === selected) ? selected : null;
   });
-  readonly rows = computed(() =>
-    sortCatalog(filterCatalog(this.catalog.entries(), this.query(), this.category()), this.sort()),
-  );
+  /** 並べ替えは目録か並べ方が変わったときだけ行う（キー入力では走らせない） */
+  private readonly sorted = computed(() => sortCatalog(this.catalog.entries(), this.sort()));
+  readonly rows = computed(() => filterCatalog(this.sorted(), this.query(), this.category()));
   readonly needsRefresh = computed(
     () => this.catalog.entries().length > 0 && !hasAnyCategory(this.catalog.entries()),
   );

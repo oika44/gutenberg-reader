@@ -43,7 +43,10 @@ describe('ReaderComponent（単語を調べる・P-Study 用 CSV）', () => {
           },
         },
         { provide: WordLookupService, useValue: { lookup } },
-        { provide: DesktopBridgeService, useValue: { api: { saveFile } } },
+        {
+          provide: DesktopBridgeService,
+          useValue: { api: { saveFile, onOpenBook: vi.fn(() => () => {}) } },
+        },
       ],
     });
     const fixture = TestBed.createComponent(ReaderComponent);

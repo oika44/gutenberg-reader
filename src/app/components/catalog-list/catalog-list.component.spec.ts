@@ -1,3 +1,5 @@
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { By } from '@angular/platform-browser';
 import { TestBed } from '@angular/core/testing';
 import { CatalogEntry } from '../../services/catalog';
 import { CatalogService } from '../../services/catalog.service';
@@ -58,6 +60,36 @@ describe('CatalogListComponent', () => {
     };
     return { fake, fixture, el, component, openBookInReader, ids, text, count, select, type };
   }
+
+  it('並べ替えを題名にした状態で絞り込んでも題名順のまま', () => {
+    const { select, type, ids } = create();
+    select('並べ替え', 'title');
+    type('tale');
+    expect(ids()).toEqual([1, 3]);
+  });
+
+  it('「開く」ボタンに題名入りの aria-label を付ける', async () => {
+    const { el, fixture } = create();
+    // jsdom では大きさが 0 で行が描かれないので、表示領域の大きさを与える
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
+      width: 800,
+      height: 400,
+      top: 0,
+      left: 0,
+      right: 800,
+      bottom: 400,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
+    });
+    const viewport = fixture.debugElement.query(By.directive(CdkVirtualScrollViewport))
+      .componentInstance as CdkVirtualScrollViewport;
+    viewport.checkViewportSize();
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    fixture.detectChanges();
+    const button = el.querySelector('.catalog-row button') as HTMLButtonElement | null;
+    expect(button?.getAttribute('aria-label')).toBe('A Tale を開く');
+  });
 
   it('生成時に load を 1 回呼ぶ', () => {
     const { fake } = create();

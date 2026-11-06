@@ -59,3 +59,5 @@ After: 不具合「ダブルクリックしても反応しない」— 原因: �
 2026-11-06 目録検索で日本語の題名を Enter で英訳して検索する: Weblio（既存の中継 /weblio/）の和英の .content-explanation を「、」で区切り、かっこ書きと重複を除いた候補ごとに検索して合わせる。Weblio に無い語（404）は英訳なし、通信エラーの文は weblio-error.ts に共通化（画面 196・Electron 77）。
 2026-11-06 「宝島」が Weblio の要約欄で Takarashima Island と誤訳され見つからなかったため、meta description の【単語】【英訳】【対訳】も英訳の候補にし、先頭の a・an・the を外す（画面 203）。
 2026-11-06 目録の一覧を別ウインドウ（app://local/catalog、App がパスで出し分け、ルーターなし）に出し、分類（Bookshelves の Category:）で絞り込む設計にする。一覧から開く本は main 経由で読書ウインドウに送る（docs/superpowers/specs/2026-11-06-catalog-window-design.md）。
+2026-11-06 目録の一覧ウインドウを実装した: App が APP_PATH（既定は location.pathname）で /catalog なら app-catalog-list、それ以外は app-reader を出し、読書画面に「目録の一覧」ボタンと onOpenBook の登録（DestroyRef で解除）を足した（画面 247・Electron 95）。
+2026-11-06 最終レビューの修正: 並べ替えに Intl.Collator を使い、並べ替えと絞り込みの computed を分けた。読書ウインドウを閉じたら目録の一覧も閉じる。

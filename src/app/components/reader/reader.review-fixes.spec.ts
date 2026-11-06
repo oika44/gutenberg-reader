@@ -42,7 +42,10 @@ describe('ReaderComponent（レビュー指摘の修正）', () => {
           useValue: { load: logLoad, init: async () => {}, logPath: () => null, append },
         },
         { provide: WordLookupService, useValue: { lookup } },
-        { provide: DesktopBridgeService, useValue: { api: { saveFile } } },
+        {
+          provide: DesktopBridgeService,
+          useValue: { api: { saveFile, onOpenBook: vi.fn(() => () => {}) } },
+        },
       ],
     });
     fixture = TestBed.createComponent(ReaderComponent);
