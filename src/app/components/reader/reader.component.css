@@ -1,0 +1,208 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-family: system-ui, sans-serif;
+  color: #222;
+}
+
+.toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.toolbar input {
+  width: 320px;
+  padding: 4px 6px;
+}
+
+.book-title {
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.status {
+  color: #666;
+}
+
+.message {
+  margin: 0;
+  padding: 6px 12px;
+  background: #fff6d6;
+  border-bottom: 1px solid #eedc9a;
+}
+
+.layout {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.text {
+  flex: 1;
+  height: 100%;
+  font-family: ui-monospace, monospace;
+  font-size: 15px;
+}
+
+/* 高さは LINE_HEIGHT（24px）と揃える */
+.line {
+  display: flex;
+  height: 24px;
+  line-height: 24px;
+  white-space: pre;
+}
+
+.line.in-range {
+  background: #e3f0ff;
+}
+
+.line.start,
+.line.end {
+  background: #b9d8ff;
+}
+
+.line-no {
+  flex: none;
+  width: 4.5em;
+  margin-right: 12px;
+  border: none;
+  background: transparent;
+  color: #999;
+  text-align: right;
+  font: inherit;
+  cursor: pointer;
+}
+
+.line-no:hover {
+  color: #0057b8;
+  text-decoration: underline;
+}
+
+.line-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.side {
+  width: 300px;
+  flex: none;
+  overflow-y: auto;
+  border-left: 1px solid #ddd;
+  padding: 8px 12px;
+}
+
+.side h2 {
+  font-size: 15px;
+  margin: 8px 0 4px;
+}
+
+.hint {
+  font-size: 12px;
+  color: #666;
+  margin: 0 0 4px;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 12px;
+  margin: 0;
+}
+
+dt {
+  color: #555;
+}
+
+dd {
+  margin: 0;
+  font-weight: bold;
+}
+
+.count {
+  font-weight: normal;
+  color: #555;
+  font-size: 13px;
+}
+
+.result {
+  background: #f5f5f5;
+  padding: 6px 8px;
+  border-radius: 4px;
+}
+
+.result p {
+  margin: 4px 0 0;
+  font-size: 13px;
+}
+
+.pron {
+  margin-left: 8px;
+  color: #666;
+}
+
+.pstudy ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 8px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.pstudy li {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  font-size: 13px;
+  border-bottom: 1px solid #eee;
+  padding: 2px 0;
+}
+
+.pstudy .word {
+  font-weight: bold;
+  flex: none;
+}
+
+.pstudy .meaning {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #444;
+}
+
+.remove {
+  flex: none;
+  border: none;
+  background: transparent;
+  color: #b00;
+  cursor: pointer;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.record {
+  margin-top: 8px;
+  width: 100%;
+  padding: 6px;
+  font-weight: bold;
+}
+
+.log-path {
+  font-size: 12px;
+  color: #555;
+  word-break: break-all;
+}
+
+.looking {
+  margin: 4px 0;
+  color: #0057b8;
+  font-size: 13px;
+}

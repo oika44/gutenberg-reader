@@ -1,0 +1,111 @@
+<app-catalog-search (bookSelected)="selectFromCatalog(bookInput, $event)" />
+
+<header class="toolbar">
+  <input
+    #bookInput
+    type="text"
+    placeholder="本の番号か URL（例: 1342）"
+    aria-label="本の番号か URL"
+    (keydown.enter)="openBook(bookInput.value)"
+  />
+  <button type="button" (click)="openBook(bookInput.value)" [disabled]="loading()">開く</button>
+  @if (book(); as b) {
+    <span class="book-title"
+      >{{ b.title || '（題名なし）' }}{{ b.author ? ' / ' + b.author : '' }}</span
+    >
+  }
+  @if (loading()) {
+    <span class="status">読み込み中…</span>
+  }
+</header>
+
+@if (message()) {
+  <p class="message" role="status">{{ message() }}</p>
+}
+
+<div class="layout">
+  <cdk-virtual-scroll-viewport
+    class="text"
+    [itemSize]="lineHeight"
+    (dblclick)="onTextDblClick($event)"
+  >
+    <div
+      class="line"
+      *cdkVirtualFor="let line of book()?.lines ?? []; let i = index"
+      [class.in-range]="inRange(i + 1)"
+      [class.start]="startLine() === i + 1"
+      [class.end]="endLine() === i + 1"
+    >
+      <button type="button" class="line-no" (click)="clickLine(i + 1)">{{ i + 1 }}</button>
+      <span class="line-text">{{ line }}</span>
+    </div>
+  </cdk-virtual-scroll-viewport>
+
+  <aside class="side">
+    <section class="range">
+      <h2>読んだ範囲</h2>
+      <p class="hint">行番号をクリックして開始行と終了行を指定する</p>
+      <dl>
+        <dt>開始行</dt>
+        <dd>{{ startLine() ?? '—' }}</dd>
+        <dt>終了行</dt>
+        <dd>{{ endLine() ?? '—' }}</dd>
+        <dt>行数</dt>
+        <dd>{{ stats()?.lines ?? '—' }}</dd>
+        <dt>語数</dt>
+        <dd>{{ stats()?.words ?? '—' }}</dd>
+      </dl>
+      <button type="button" class="record" (click)="record()" [disabled]="!canRecord()">
+        記録する
+      </button>
+      <p class="log-path">
+        記録ファイル: {{ logPath() ?? '未設定（最初の記録時に選ぶ）' }}
+        <button type="button" (click)="changeLogPath()">変更</button>
+      </p>
+    </section>
+
+    <section class="lookup">
+      <h2>
+        調べた単語 <span class="count">{{ lookupCount() }} 語</span>
+      </h2>
+      <p class="hint">本文の単語をダブルクリックすると Weblio で調べる</p>
+      @if (lookingUp(); as w) {
+        <p class="looking" role="status">「{{ w }}」を調べています…</p>
+      }
+      @if (lastResult(); as r) {
+        <div class="result">
+          <strong>{{ r.word }}</strong>
+          @if (r.pronunciation) {
+            <span class="pron">{{ r.pronunciation }}</span>
+          }
+          <p>{{ r.meaning }}</p>
+        </div>
+      }
+    </section>
+
+    <section class="pstudy">
+      <h2>
+        P-Study リスト <span class="count">{{ builder.count() }} 件</span>
+      </h2>
+      <ul>
+        @for (entry of builder.entries(); track entry.word; let i = $index) {
+          <li>
+            <span class="word">{{ entry.word }}</span>
+            <span class="meaning">{{ entry.meaning }}</span>
+            <button type="button" class="remove" (click)="removeEntry(i)" aria-label="削除">
+              ×
+            </button>
+          </li>
+        }
+      </ul>
+      <div class="buttons">
+        <button type="button" (click)="savePStudy('SJIS')" [disabled]="builder.count() === 0">
+          CSV 保存（Shift_JIS）
+        </button>
+        <button type="button" (click)="savePStudy('UTF8')" [disabled]="builder.count() === 0">
+          CSV 保存（UTF-8）
+        </button>
+      </div>
+    </section>
+  </aside>
+</div>

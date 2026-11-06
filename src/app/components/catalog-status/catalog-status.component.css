@@ -1,0 +1,22 @@
+:host {
+  display: contents;
+}
+
+.catalog-status {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.status {
+  color: #666;
+}
+
+.message {
+  order: 1;
+  flex-basis: 100%;
+  margin: 0;
+  padding: 6px 12px;
+  background: #fff6d6;
+  border-bottom: 1px solid #eedc9a;
+}

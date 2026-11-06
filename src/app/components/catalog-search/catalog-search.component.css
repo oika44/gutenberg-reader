@@ -1,0 +1,55 @@
+.catalog-bar {
+  flex-wrap: wrap;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.catalog-bar input {
+  width: 320px;
+  padding: 4px 6px;
+}
+
+.status {
+  color: #666;
+}
+
+.message {
+  margin: 0;
+  padding: 6px 12px;
+  background: #fff6d6;
+  border-bottom: 1px solid #eedc9a;
+}
+
+.catalog-results {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+}
+
+.catalog-result {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  padding: 4px 8px;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.catalog-result:hover {
+  background: #e3f0ff;
+}
+
+.catalog-result .title {
+  font-weight: bold;
+}
+
+.catalog-result .author,
+.catalog-result .id {
+  color: #666;
+}

@@ -1,0 +1,75 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.filter {
+  width: 280px;
+  padding: 4px 6px;
+}
+
+.count,
+.status {
+  color: #666;
+}
+
+p.status {
+  margin: 0;
+  padding: 6px 12px;
+}
+
+.message {
+  margin: 0;
+  padding: 6px 12px;
+  background: #fff6d6;
+  border-bottom: 1px solid #eedc9a;
+}
+
+.catalog-viewport {
+  flex: 1;
+  min-height: 0;
+}
+
+.catalog-row {
+  box-sizing: border-box;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  height: 56px;
+  padding: 0 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.catalog-row .info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.catalog-row .info span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.catalog-row .title {
+  font-weight: bold;
+}
+
+.catalog-row .author,
+.catalog-row .categories,
+.catalog-row .id {
+  color: #666;
+  font-size: 12px;
+}

@@ -1,0 +1,18 @@
+<div class="catalog-status">
+  @if (catalog.entries().length === 0) {
+    <button type="button" (click)="catalog.fetch()" [disabled]="catalog.loading()">
+      目録を取得
+    </button>
+  } @else {
+    <span class="status">
+      目録: {{ catalog.fetchedAt() }} 取得（{{ catalog.entries().length }} 冊）
+    </span>
+    <button type="button" (click)="catalog.fetch()" [disabled]="catalog.loading()">更新</button>
+  }
+  @if (catalog.loading()) {
+    <span class="status" role="status">目録を取得しています…</span>
+  }
+</div>
+@if (catalog.error(); as message) {
+  <p class="message" role="status">{{ message }}</p>
+}

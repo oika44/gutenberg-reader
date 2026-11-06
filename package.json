@@ -1,0 +1,84 @@
+{
+  "name": "gutenberg-reader",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "desktop": "npm run build && electron .",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "sync:pstudy": "node scripts/sync-pstudy.mjs",
+    "prestart": "npm run sync:pstudy",
+    "pretest": "npm run sync:pstudy",
+    "prebuild": "npm run sync:pstudy",
+    "check:angular": "ng build --configuration development && node scripts/check-single-angular.mjs",
+    "precheck:angular": "npm run sync:pstudy",
+    "test:electron": "vitest run --dir electron",
+    "lint": "ng lint"
+  },
+  "private": true,
+  "packageManager": "npm@11.19.1",
+  "dependencies": {
+    "@angular/cdk": "^22.2.5",
+    "@angular/common": "^22.2.0",
+    "@angular/compiler": "^22.2.0",
+    "@angular/core": "^22.2.0",
+    "@angular/forms": "^22.2.0",
+    "@angular/platform-browser": "^22.2.0",
+    "@angular/router": "^22.2.0",
+    "encoding-japanese": "^2.5.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.2.2",
+    "@angular/cli": "^22.2.2",
+    "@angular/compiler-cli": "^22.2.0",
+    "@eslint/js": "^10.0.1",
+    "@types/encoding-japanese": "^2.2.1",
+    "angular-eslint": "22.6.0",
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3",
+    "eslint": "^10.12.0",
+    "globals": "^17.14.0",
+    "jsdom": "^30.0.0",
+    "prettier": "^3.9.10",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "8.71.0",
+    "vitest": "^5.0.0"
+  },
+  "main": "electron/main.mjs",
+  "description": "Project Gutenberg 読書記録アプリ",
+  "author": "oika",
+  "build": {
+    "appId": "jp.oika.gutenberg-reader",
+    "productName": "GutenbergReader",
+    "directories": {
+      "output": "dist/widget"
+    },
+    "files": [
+      "electron/**",
+      "!electron/**/*.test.mjs",
+      "dist/gutenberg-reader/browser/**",
+      "!node_modules/**"
+    ],
+    "win": {
+      "target": [
+        "zip"
+      ],
+      "signAndEditExecutable": false,
+      "executableName": "gutenberg-reader",
+      "artifactName": "${productName}-Windows-${version}.${ext}"
+    },
+    "linux": {
+      "target": [
+        "deb"
+      ],
+      "category": "Education",
+      "maintainer": "oika"
+    }
+  }
+}

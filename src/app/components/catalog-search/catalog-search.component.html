@@ -1,0 +1,43 @@
+<div class="catalog-bar">
+  <app-catalog-status />
+  <input
+    type="text"
+    placeholder="題名・著者で検索（日本語の題名は Enter で英訳）"
+    aria-label="題名・著者で検索（英語の本）"
+    [value]="query()"
+    (input)="onInput($event)"
+    (keydown.enter)="translate()"
+    [disabled]="catalog.entries().length === 0"
+  />
+</div>
+@if (query().trim() !== '' && japanese()) {
+  @let t = translation();
+  @if (t === null) {
+    <p class="status">Enter で英語に訳して検索します</p>
+  } @else if (t.status === 'pending') {
+    <p class="status" role="status">「{{ t.source }}」を英訳しています…</p>
+  } @else if (t.status === 'error') {
+    <p class="message" role="status">{{ t.message }}</p>
+  } @else if (t.candidates.length === 0) {
+    <p class="status">「{{ t.source }}」の英訳が見つかりません。英語の題名で入れてください</p>
+  } @else {
+    <p class="status">「{{ t.source }}」→ {{ t.candidates.join('、') }} で検索しました</p>
+  }
+}
+@if (showResults()) {
+  @if (results().length === 0) {
+    <p class="status">見つかりません</p>
+  } @else {
+    <ul class="catalog-results">
+      @for (entry of results(); track entry.id) {
+        <li>
+          <button type="button" class="catalog-result" (click)="select(entry.id)">
+            <span class="title">{{ entry.title }}</span>
+            <span class="author">{{ entry.author }}</span>
+            <span class="id">#{{ entry.id }}</span>
+          </button>
+        </li>
+      }
+    </ul>
+  }
+}

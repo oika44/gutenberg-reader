@@ -1,0 +1,58 @@
+<header class="toolbar">
+  <app-catalog-status />
+  <input
+    type="text"
+    class="filter"
+    placeholder="題名・著者で絞り込む"
+    aria-label="題名・著者で絞り込む"
+    [value]="query()"
+    (input)="onQuery($event)"
+    [disabled]="catalog.entries().length === 0"
+  />
+  <select
+    aria-label="分類"
+    [value]="category() ?? ''"
+    (change)="onCategory($event)"
+    [disabled]="catalog.entries().length === 0"
+  >
+    <option value="" [selected]="category() === null">すべて</option>
+    @for (c of categories(); track c.name) {
+      <option [value]="c.name" [selected]="category() === c.name">
+        {{ c.name }}（{{ c.count }}）
+      </option>
+    }
+  </select>
+  <select
+    aria-label="並べ替え"
+    [value]="sort()"
+    (change)="onSort($event)"
+    [disabled]="catalog.entries().length === 0"
+  >
+    <option value="id" [selected]="sort() === 'id'">番号</option>
+    <option value="title" [selected]="sort() === 'title'">題名</option>
+    <option value="author" [selected]="sort() === 'author'">著者</option>
+  </select>
+  <span class="count">{{ rows().length }} 冊</span>
+</header>
+
+@if (message(); as text) {
+  <p class="message" role="status">{{ text }}</p>
+}
+@if (needsRefresh()) {
+  <p class="status">分類を使うには目録を更新してください</p>
+}
+@if (catalog.entries().length > 0 && rows().length === 0) {
+  <p class="status">見つかりません</p>
+}
+
+<cdk-virtual-scroll-viewport class="catalog-viewport" [itemSize]="rowHeight">
+  <div class="catalog-row" *cdkVirtualFor="let entry of rows(); trackBy: trackById">
+    <div class="info">
+      <span class="title">{{ entry.title }}</span>
+      <span class="author">{{ entry.author }}</span>
+      <span class="categories">{{ entry.categories.join(', ') }}</span>
+    </div>
+    <span class="id">#{{ entry.id }}</span>
+    <button type="button" (click)="open(entry.id)">開く</button>
+  </div>
+</cdk-virtual-scroll-viewport>
