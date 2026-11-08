@@ -8,7 +8,7 @@ Project Gutenberg の本を読み、行番号で指定した範囲の語数・�
 
 ## 前提
 
-`../pstudy-dict` が同じフォルダに並んでいる必要がある。`npm start`・`npm test`・`npm run build` の前に `scripts/sync-pstudy.mjs` が `../pstudy-dict/src/app/services/` の 2 ファイルを `src/app/pstudy/` にコピーし、`@pstudy/*` で読み込む。`npx ng …` を直接実行すると同期されないので、先に `npm run sync:pstudy` を実行する。
+`pstudy-dict` は git submodule として `pstudy-dict/` に入っている（取得していなければ `git submodule update --init`）。`npm start`・`npm test`・`npm run build` の前に `scripts/sync-pstudy.mjs` が `pstudy-dict/src/app/services/` の 2 ファイルを `src/app/pstudy/` にコピーし、`@pstudy/*` で読み込む。`npx ng …` を直接実行すると同期されないので、先に `npm run sync:pstudy` を実行する。
 
 ## コマンド
 
@@ -18,6 +18,7 @@ Project Gutenberg の本を読み、行番号で指定した範囲の語数・�
 | 画面のテスト（1 ファイル）             | `npx ng test --watch=false --include src/app/services/text-count.spec.ts` |
 | 画面のテスト（名前で絞る）             | `npx ng test --watch=false --filter "countRange"`                         |
 | Electron のテスト（全部 / 1 ファイル） | `npm run test:electron` / `npx vitest run electron/paths.test.mjs`        |
+| scripts のテスト                       | `npm run test:scripts`                                                    |
 | デスクトップ版を起動                   | `npm run desktop`（ビルドしてから Electron を起動する）                   |
 | 画面だけをブラウザで確認               | `npm start`（記録・CSV 保存はできない）                                   |
 | Angular の二重同梱の確認               | `npm run check:angular`                                                   |
@@ -40,7 +41,7 @@ Project Gutenberg の本を読み、行番号で指定した範囲の語数・�
 
 ## 守ること
 
-- `src/app/pstudy/`・`node_modules/`・`.angular/`・`dist/` は読まない・編集しない。共有部品を直すときは `../pstudy-dict` 側で直す。
+- `src/app/pstudy/`・`node_modules/`・`.angular/`・`dist/` は読まない・編集しない。共有部品を直すときはサブモジュール `pstudy-dict/` 側で直してコミットし、このリポジトリで参照コミットを更新する。
 - パスは `node:path` で扱う（Windows 版も作るため）。
 - テストは先に書き、失敗→成功を確かめてから実装する。テストの共通データは `*.testing.ts` に置く（`tsconfig.app.json` でアプリのビルドから外している）。
 - 外から見える動きを変えたら README を、重要な決定をしたら `docs/superpowers/2026-11-03-implementation-log.md` に 1 行で追記する。

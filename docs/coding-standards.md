@@ -29,7 +29,7 @@ GutenbergReader のコードを書くときの約束をまとめる。目的は 
 
 - 新しい判断（「この値なら許す」「この形式なら読む」など）は、まず純粋な関数として書く。コンポーネントや `main.mjs` に直接書かない。
 - `electron/main.mjs` は Electron の中でしか動かずテストできない。中に `if` を増やしたくなったら、`paths.mjs`・`log-file.mjs` のように別の `.mjs` に切り出す。
-- `src/app/pstudy/` は `../pstudy-dict` からの自動コピーなので編集しない。直すときは `pstudy-dict` 側で直す。
+- `src/app/pstudy/` はサブモジュール `pstudy-dict/` からの自動コピーなので編集しない。直すときは `pstudy-dict` 側で直す。
 
 ### 1.3 Angular
 
@@ -108,11 +108,11 @@ GutenbergReader のコードを書くときの約束をまとめる。目的は 
 
 次は生成物か外部のもので、調べものの対象から外す。検索するときも除外する。
 
-| 場所                                  | 理由                                                                      |
-| ------------------------------------- | ------------------------------------------------------------------------- |
-| `node_modules/`・`.angular/`・`dist/` | 依存とビルドの結果                                                        |
-| `src/app/pstudy/`                     | `pstudy-dict` からの自動コピー（元は `../pstudy-dict/src/app/services/`） |
-| `package-lock.json`                   | 依存の固定。依存を変えるとき以外は読まない                                |
+| 場所                                  | 理由                                                                                   |
+| ------------------------------------- | -------------------------------------------------------------------------------------- |
+| `node_modules/`・`.angular/`・`dist/` | 依存とビルドの結果                                                                     |
+| `src/app/pstudy/`                     | `pstudy-dict` からの自動コピー（元はサブモジュールの `pstudy-dict/src/app/services/`） |
+| `package-lock.json`                   | 依存の固定。依存を変えるとき以外は読まない                                             |
 
 ```sh
 grep -rn "parseLog" src electron --include=*.ts --include=*.mjs --exclude-dir=pstudy

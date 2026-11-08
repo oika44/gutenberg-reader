@@ -33,7 +33,24 @@ UTF-8（BOM 付き）・改行 CRLF。Windows の Excel でそのまま開ける
 
 ## 起動と配布物の作成
 
-`gutenberg-reader` と `pstudy-dict` を同じフォルダに並べて置く（共有部品をコピーするため。下の「pstudy-dict との共有」を参照）。
+### clone 時の注意
+
+`pstudy-dict` は git submodule として `pstudy-dict/` に入っている（共有部品をコピーするため。下の「pstudy-dict との共有」を参照）。普通に clone しただけでは `pstudy-dict/` が空になり、`npm start`・`npm test`・`npm run build` が「pstudy-dict が見つかりません」で止まる。
+
+```bash
+# サブモジュールごと clone する
+git clone --recursive https://github.com/oika44/gutenberg-reader.git
+
+# --recursive を付けずに clone した場合
+git submodule update --init
+```
+
+- `pstudy-dict` の URL は SSH（`git@github.com:oika44/pstudyDict.git`）なので、GitHub に SSH 鍵を登録しておく。Windows でも同じ。
+- `git pull` しても `pstudy-dict/` は自動では更新されない。pull の後に `git submodule update` を実行する（`git config submodule.recurse true` を設定すると pull で一緒に更新される）。
+- `pstudy-dict/` は特定のコミットを指す状態（detached HEAD）で取得される。中で作業するときは先に `git switch master` でブランチに切り替える。
+- `npm install` は `gutenberg-reader` 側だけで行う。`pstudy-dict/` の中で `npm install` しなくてよい（共有部品はコピーして使うため）。
+
+### コマンド
 
 | 用途                                                       | コマンド                              |
 | ---------------------------------------------------------- | ------------------------------------- |
@@ -41,6 +58,7 @@ UTF-8（BOM 付き）・改行 CRLF。Windows の Excel でそのまま開ける
 | 画面だけを確認（ブラウザ、記録の保存は不可）               | `npm start`                           |
 | テスト（画面）                                             | `npm test`                            |
 | テスト（Electron の記録ファイル処理・パスの判定・preload） | `npm run test:electron`               |
+| テスト（scripts の共有部品の同期）                         | `npm run test:scripts`                |
 | lint（ESLint。画面・Electron・scripts）                    | `npm run lint`                        |
 | Windows 版（zip）を作る                                    | `npm run dist:win` → `dist/widget/`   |
 | Linux 版（deb）を作る                                      | `npm run dist:linux` → `dist/widget/` |
@@ -115,6 +133,8 @@ Linux で `npm run desktop` が sandbox のエラーで起動しないときは�
 
 ### pstudy-dict との共有
 
-Weblio 検索（`word-lookup.service.ts`）と P-Study 用 CSV 作成（`pstudy-builder.service.ts`）は、`../pstudy-dict/src/app/services/` のファイルを使う。`npm start`・`npm test`・`npm run build` の前に `scripts/sync-pstudy.mjs` が `src/app/pstudy/` へ自動でコピーし、`@pstudy/*` で読み込む。`src/app/pstudy/` は生成物なので直接編集しない（git にも入れない）。`npx ng …` を直接実行すると同期されないので、npm スクリプトを使う。
+Weblio 検索（`word-lookup.service.ts`）と P-Study 用 CSV 作成（`pstudy-builder.service.ts`）は、git submodule `pstudy-dict/` の `src/app/services/` のファイルを使う。`npm start`・`npm test`・`npm run build` の前に `scripts/sync-pstudy.mjs` が `src/app/pstudy/` へ自動でコピーし、`@pstudy/*` で読み込む。`src/app/pstudy/` は生成物なので直接編集しない（git にも入れない）。`npx ng …` を直接実行すると同期されないので、npm スクリプトを使う。
 
-直接 `../pstudy-dict` を参照しないのは、その場合 `pstudy-dict/node_modules` の Angular も同梱されて Angular が 2 つになり、DI が壊れるため。
+直接 `pstudy-dict/` を参照しないのは、その場合 `pstudy-dict/node_modules` の Angular も同梱されて Angular が 2 つになり、DI が壊れるため。
+
+共有部品を直すときは `pstudy-dict/` の中で（または `pstudy-dict` のリポジトリで）直してコミット・push し、このリポジトリで参照するコミットを更新する（`git submodule update --remote pstudy-dict` の後に `git add pstudy-dict` してコミット）。

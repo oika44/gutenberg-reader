@@ -17,6 +17,7 @@
     "check:angular": "ng build --configuration development && node scripts/check-single-angular.mjs",
     "precheck:angular": "npm run sync:pstudy",
     "test:electron": "vitest run --dir electron",
+    "test:scripts": "vitest run --dir scripts",
     "lint": "ng lint"
   },
   "private": true,

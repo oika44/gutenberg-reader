@@ -8,6 +8,7 @@ GutenbergReader のテストの構成・実行方法・書き方の約束をま�
 | --------------- | --------------------------- | ---------------------------------------------------------------------------- |
 | 画面（Angular） | `npm test -- --watch=false` | `src/**/*.spec.ts`。`@angular/build:unit-test` が jsdom 上で Vitest を動かす |
 | Electron        | `npm run test:electron`     | `electron/*.test.mjs`。Node 上で Vitest を直接動かす                         |
+| scripts         | `npm run test:scripts`      | `scripts/*.test.mjs`。Node 上で Vitest を直接動かす                          |
 
 - 画面のテストは `npx ng test` ではなく `npm test` で実行する。`pretest` で `pstudy-dict` の共有部品（`src/app/pstudy/`）がコピーされ、これがないとビルドに失敗する。
 - `--watch=false` を付けないと変更を待ち続ける（開発中はそのほうが便利）。

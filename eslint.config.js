@@ -7,8 +7,8 @@ const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
 
 module.exports = defineConfig([
-  // 生成物。src/app/pstudy/ は ../pstudy-dict からの自動コピーなので、元の側で lint する
-  globalIgnores(['dist/', '.angular/', 'src/app/pstudy/']),
+  // 生成物と外部の部品。src/app/pstudy/ はサブモジュール pstudy-dict/ からの自動コピーなので、元の側で lint する
+  globalIgnores(['dist/', '.angular/', 'src/app/pstudy/', 'pstudy-dict/']),
   {
     files: ['**/*.ts'],
     extends: [

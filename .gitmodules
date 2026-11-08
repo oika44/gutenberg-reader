@@ -1,0 +1,3 @@
+[submodule "pstudy-dict"]
+	path = pstudy-dict
+	url = git@github.com:oika44/pstudyDict.git
