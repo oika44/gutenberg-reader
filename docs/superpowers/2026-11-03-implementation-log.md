@@ -63,3 +63,4 @@ After: 不具合「ダブルクリックしても反応しない」— 原因: �
 2026-11-06 最終レビューの修正: 並べ替えに Intl.Collator を使い、並べ替えと絞り込みの computed を分けた。読書ウインドウを閉じたら目録の一覧も閉じる。
 2026-11-08 pstudy-dict を隣のフォルダ（../pstudy-dict）から git submodule（pstudy-dict/）に切り替えた。sync-pstudy.mjs は findPstudySource でサブモジュールだけを見る（npm run test:scripts）。ESLint は pstudy-dict/ を除外する。
 2026-11-09 本文の検索を足した: 判断は text-search.ts の searchLines（大文字・小文字を区別しない部分一致・記号は文字どおり・1 行 1 件・最大 500 行）、画面は検索欄と右の列の一覧、押すと scrollToIndex で飛んで .hit の色を付ける（範囲は変えない）。仮想スクロールでブラウザの検索が効かないため Ctrl+F / ⌘F を検索欄に割り当てる（画面 270）。
+2026-11-09 デスクトップ版を操作するスキル .claude/skills/run-gutenberg-reader/ を足した: driver.mjs が xvfb 上の Electron を CDP（Node 組み込みの WebSocket、Playwright なし）で操作し、既定で --user-data-dir の一時フォルダを使って本物の記録 CSV・しおりに触れない。終了は Browser.close（SIGTERM だと Xvfb が残る）。
