@@ -61,3 +61,4 @@ After: 不具合「ダブルクリックしても反応しない」— 原因: �
 2026-11-06 目録の一覧を別ウインドウ（app://local/catalog、App がパスで出し分け、ルーターなし）に出し、分類（Bookshelves の Category:）で絞り込む設計にする。一覧から開く本は main 経由で読書ウインドウに送る（docs/superpowers/specs/2026-11-06-catalog-window-design.md）。
 2026-11-06 目録の一覧ウインドウを実装した: App が APP_PATH（既定は location.pathname）で /catalog なら app-catalog-list、それ以外は app-reader を出し、読書画面に「目録の一覧」ボタンと onOpenBook の登録（DestroyRef で解除）を足した（画面 247・Electron 95）。
 2026-11-06 最終レビューの修正: 並べ替えに Intl.Collator を使い、並べ替えと絞り込みの computed を分けた。読書ウインドウを閉じたら目録の一覧も閉じる。
+2026-11-09 本文の検索を足した: 判断は text-search.ts の searchLines（大文字・小文字を区別しない部分一致・記号は文字どおり・1 行 1 件・最大 500 行）、画面は検索欄と右の列の一覧、押すと scrollToIndex で飛んで .hit の色を付ける（範囲は変えない）。仮想スクロールでブラウザの検索が効かないため Ctrl+F / ⌘F を検索欄に割り当てる（画面 270）。

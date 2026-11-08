@@ -25,6 +25,7 @@ import { normalizeSelectedWord } from '../../services/selected-word';
 import { findBookmark, formatTimestamp, isDuplicate } from '../../services/reading-log';
 import { ReadingLogService } from '../../services/reading-log.service';
 import { RangeStats, countRange } from '../../services/text-count';
+import { MAX_HITS, SearchResult, searchLines } from '../../services/text-search';
 import { weblioErrorReason } from '../../services/weblio-error';
 
 const errorText = (err: unknown) => (err instanceof Error ? err.message : String(err));
@@ -37,6 +38,7 @@ export const LINE_HEIGHT = 24;
   imports: [ScrollingModule, CatalogSearchComponent],
   templateUrl: './reader.component.html',
   styleUrl: './reader.component.css',
+  host: { '(document:keydown)': 'onDocumentKeydown($event)' },
 })
 export class ReaderComponent {
   private readonly bookService = inject(BookService);
@@ -48,8 +50,10 @@ export class ReaderComponent {
   protected readonly builder = inject(PStudyBuilderService);
   private readonly viewport = viewChild.required(CdkVirtualScrollViewport);
   private readonly bookInput = viewChild.required<ElementRef<HTMLInputElement>>('bookInput');
+  private readonly searchInput = viewChild.required<ElementRef<HTMLInputElement>>('searchInput');
 
   protected readonly lineHeight = LINE_HEIGHT;
+  protected readonly maxHits = MAX_HITS;
   /** 目録の一覧ウインドウを開けるのはデスクトップ版だけ */
   protected readonly hasCatalogWindow = typeof this.desktop?.openCatalogWindow === 'function';
 
@@ -67,6 +71,10 @@ export class ReaderComponent {
   readonly lookedUp = signal<ReadonlySet<string>>(new Set());
   readonly lookupCount = computed(() => this.lookedUp().size);
   readonly logPath = this.readingLog.logPath;
+  /** 本文の検索結果。検索していなければ null */
+  readonly searchResult = signal<SearchResult | null>(null);
+  /** 検索結果から飛んだ行（色を付ける） */
+  readonly hitLine = signal<number | null>(null);
 
   readonly stats = computed<RangeStats | null>(() => {
     const book = this.book();
@@ -135,6 +143,8 @@ export class ReaderComponent {
       // 調べた単語数は「その本で前回の記録以降」のものなので、別の本に切り替えたら 0 に戻す
       if (this.book()?.id !== id) this.lookedUp.set(new Set());
       this.book.set(book);
+      this.searchResult.set(null);
+      this.hitLine.set(null);
       this.endLine.set(null);
       const bookmark = findBookmark(records, id);
       if (bookmark !== null && bookmark > book.lines.length) {
@@ -238,6 +248,33 @@ export class ReaderComponent {
       this.showError(err);
     } finally {
       this.saving.set(false);
+    }
+  }
+
+  /** 本文を検索する。空の検索語なら一覧を消す */
+  search(query: string): void {
+    const book = this.book();
+    if (!book) {
+      this.message.set('本を開いてから検索してください');
+      return;
+    }
+    this.hitLine.set(null);
+    this.searchResult.set(query.trim() === '' ? null : searchLines(book.lines, query));
+  }
+
+  /** 検索結果の行まで本文をスクロールする。読んだ範囲は変えない */
+  jumpTo(line: number): void {
+    this.hitLine.set(line);
+    this.viewport().scrollToIndex(line - 1);
+  }
+
+  /** Ctrl+F（Mac は ⌘F）で検索欄に移る。本文は仮想スクロールなのでブラウザの検索では画面外の行が見つからない */
+  protected onDocumentKeydown(event: KeyboardEvent): void {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'f') {
+      event.preventDefault();
+      const input = this.searchInput().nativeElement;
+      input.focus();
+      input.select();
     }
   }
 

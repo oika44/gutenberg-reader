@@ -12,6 +12,14 @@
   @if (hasCatalogWindow) {
     <button type="button" (click)="openCatalogWindow()">目録の一覧</button>
   }
+  <input
+    #searchInput
+    type="search"
+    class="search-input"
+    placeholder="本文を検索（Ctrl+F）"
+    aria-label="本文を検索"
+    (keydown.enter)="search(searchInput.value)"
+  />
   @if (book(); as b) {
     <span class="book-title"
       >{{ b.title || '（題名なし）' }}{{ b.author ? ' / ' + b.author : '' }}</span
@@ -38,6 +46,7 @@
       [class.in-range]="inRange(i + 1)"
       [class.start]="startLine() === i + 1"
       [class.end]="endLine() === i + 1"
+      [class.hit]="hitLine() === i + 1"
     >
       <button type="button" class="line-no" (click)="clickLine(i + 1)">{{ i + 1 }}</button>
       <span class="line-text">{{ line }}</span>
@@ -45,6 +54,46 @@
   </cdk-virtual-scroll-viewport>
 
   <aside class="side">
+    @if (searchResult(); as r) {
+      <section class="search">
+        <h2>
+          検索結果
+          <span class="count"
+            >{{ r.total }} 件{{
+              r.total > r.hits.length ? '（先頭 ' + maxHits + ' 件を表示）' : ''
+            }}</span
+          >
+        </h2>
+        @if (r.total === 0) {
+          <p class="hint">見つかりませんでした</p>
+        } @else {
+          <ul>
+            @for (hit of r.hits; track hit.line) {
+              <li>
+                <button
+                  type="button"
+                  class="search-hit"
+                  [class.current]="hitLine() === hit.line"
+                  (click)="jumpTo(hit.line)"
+                >
+                  <span class="hit-no">{{ hit.line }}</span>
+                  <span class="hit-text">
+                    @for (part of hit.parts; track $index) {
+                      @if (part.match) {
+                        <mark>{{ part.text }}</mark>
+                      } @else {
+                        <span>{{ part.text }}</span>
+                      }
+                    }
+                  </span>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    }
+
     <section class="range">
       <h2>読んだ範囲</h2>
       <p class="hint">行番号をクリックして開始行と終了行を指定する</p>
